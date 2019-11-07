@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">PlacesAndroidApp</string>
+    <string name="place_description_view_title">Place Details</string>
+    <string name="place_label_name">Place Name</string>
+    <string name="place_label_description">Place Description</string>
+    <string name="place_label_category">Category</string>
+    <string name="place_label_address_title">Address Title</string>
+    <string name="place_label_address_street">Address Street, City, State, Country, Zip Code</string>
+    <string name="place_label_elevation">Elevation</string>
+    <string name="place_label_latitude">Latitude</string>
+    <string name="place_label_longitude">Longitude</string>
+    <string name="example_text">Example Text</string>
+    <string name="menu_delete">Delete Place</string>
+    <string name="menu_add_place">Add Place</string>
+    <string name="menu_calculate_distance">Calculate Distance</string>
+    <string name="distance_calc_label_title">Distance Calculator</string>
+    <string name="distance_calc_label_starting_location">Starting Location</string>
+    <string name="distance_calc_label_ending_location">Ending Location</string>
+    <string name="distance_calc_label_result_distance">Distance:</string>
+    <string name="distance_calc_label_result_initial_bearing">Initial Bearing:</string>
+    <string name="default_url_string">http://10.0.2.2:8080/</string>
+</resources>

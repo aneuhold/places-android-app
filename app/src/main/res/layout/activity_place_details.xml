@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PlaceDetailsActivity">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/mainToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="?attr/actionBarSize"
+                android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+            <TextView
+                android:id="@+id/placeDescriptionViewTitleLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/place_description_view_title"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/placeNameLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/listItemPaddingLeft"
+                android:layout_marginTop="@dimen/listItemSpacing"
+                android:text="@string/place_label_name"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/placeDescriptionViewTitleLabel" />
+
+            <EditText
+                android:id="@+id/placeNameTextBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/listItemPaddingLeft"
+                android:layout_marginTop="@dimen/textBoxLabelSpacing"
+                android:layout_marginEnd="@dimen/listItemPaddingLeft"
+                android:ems="10"
+                android:hint="ASU-Poly"
+                android:inputType="text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/placeNameLabel" />
+
+            <TextView
+                android:id="@+id/placeDescriptionLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/listItemPaddingLeft"
+                android:layout_marginTop="@dimen/listItemSpacing"
+                android:text="@string/place_label_description"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/placeNameTextBox" />
+
+            <EditText
+                android:id="@+id/placeDescriptionTextBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/listItemPaddingLeft"
+                android:layout_marginTop="@dimen/textBoxLabelSpacing"
+                android:layout_marginEnd="@dimen/listItemPaddingLeft"
+                android:ems="10"
+                android:hint="Home of ASU's Software Engineering Programs"
+                android:inputType="textShortMessage|text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/placeDescriptionLabel" />
+
+            <TextView
+                android:id="@+id/placeCategoryLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/listItemPaddingLeft"
+                android:layout_marginTop="@dimen/listItemSpacing"
+                android:text="@string/place_label_category"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/placeDescriptionTextBox" />
+
+            <EditText
+                android:id="@+id/placeCategoryTextBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/listItemPaddingLeft"
+                android:layout_marginTop="@dimen/textBoxLabelSpacing"
+                android:layout_marginEnd="@dimen/listItemPaddingLeft"
+                android:ems="10"
+                android:hint="School"
+                android:inputType="text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/placeCategoryLabel" />
+
+            <TextView
+                android:id="@+id/placeAddressTitleLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/listItemPaddingLeft"
+                android:layout_marginTop="@dimen/listItemSpacing"
+                android:text="@string/place_label_address_title"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/placeCategoryTextBox" />
+
+            <EditText
+                android:id="@+id/placeAddressTitleTextBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/listItemPaddingLeft"
+                android:layout_marginTop="@dimen/textBoxLabelSpacing"
+                android:layout_marginEnd="@dimen/listItemPaddingLeft"
+                android:ems="10"
+                android:hint="ASU Software Engineering"
+                android:inputType="text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/placeAddressTitleLabel" />
+
+            <TextView
+                android:id="@+id/placeAddressStreetLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/listItemPaddingLeft"
+                android:layout_marginTop="@dimen/listItemSpacing"
+                android:text="@string/place_label_address_street"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/placeAddressTitleTextBox" />
+
+            <EditText
+                android:id="@+id/placeAddressStreetTextBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/listItemPaddingLeft"
+                android:layout_marginTop="@dimen/textBoxLabelSpacing"
+                android:layout_marginEnd="@dimen/listItemPaddingLeft"
+                android:ems="10"
+                android:hint="7171 E Sonoran Arroy Mall Peralta Hall 230 Mesa AZ 85212"
+                android:inputType="text|textPostalAddress"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/placeAddressStreetLabel" />
+
+            <TextView
+                android:id="@+id/placeElevationLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/listItemPaddingLeft"
+                android:layout_marginTop="@dimen/listItemSpacing"
+                android:text="@string/place_label_elevation"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/placeAddressStreetTextBox" />
+
+            <EditText
+                android:id="@+id/placeElevationTextBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/listItemPaddingLeft"
+                android:layout_marginTop="@dimen/textBoxLabelSpacing"
+                android:layout_marginEnd="@dimen/listItemPaddingLeft"
+                android:ems="10"
+                android:hint="1384.0"
+                android:inputType="none|number|numberDecimal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/placeElevationLabel" />
+
+            <TextView
+                android:id="@+id/placeLatitudeLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/listItemPaddingLeft"
+                android:layout_marginTop="@dimen/listItemSpacing"
+                android:text="@string/place_label_latitude"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/placeElevationTextBox" />
+
+            <EditText
+                android:id="@+id/placeLatitudeTextBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/listItemPaddingLeft"
+                android:layout_marginTop="@dimen/textBoxLabelSpacing"
+                android:layout_marginEnd="@dimen/listItemPaddingLeft"
+                android:ems="10"
+                android:hint="33.306388"
+                android:inputType="numberSigned|number|numberDecimal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/placeLatitudeLabel" />
+
+            <TextView
+                android:id="@+id/placeLongitudeLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/listItemPaddingLeft"
+                android:layout_marginTop="@dimen/listItemSpacing"
+                android:text="@string/place_label_longitude"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/placeLatitudeTextBox" />
+
+            <EditText
+                android:id="@+id/placeLongitudeTextBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/listItemPaddingLeft"
+                android:layout_marginTop="@dimen/textBoxLabelSpacing"
+                android:layout_marginEnd="@dimen/listItemPaddingLeft"
+                android:ems="10"
+                android:hint="-111.679121"
+                android:inputType="numberSigned|number|numberDecimal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/placeLongitudeLabel" />
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="match_parent"
+                android:onClick="onClickDone"
+                android:layout_height="wrap_content"
+                android:elevation="4dp"
+                android:text="Done" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
