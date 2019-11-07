@@ -16,7 +16,13 @@ import java.util.Locale;
 
 public class DistanceCalcActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
   private static final double EARTH_AVERAGE_RADIUS_MILES = 3958.8;
-  private String[] placeNames;
+  public String[] placeNames;
+  public ArrayAdapter<String> startArrayAdapter;
+  public ArrayAdapter<String> endArrayAdapter;
+  public PlaceDescription startPlace;
+  public PlaceDescription endPlace;
+  public boolean waitingOnStartPlace = false;
+  public boolean waitingOnEndPlace = false;
   private Spinner startSpinner;
   private Spinner endSpinner;
 
@@ -26,24 +32,12 @@ public class DistanceCalcActivity extends AppCompatActivity implements AdapterVi
     setContentView(R.layout.activity_distance_calculator);
 
     // Retrieve the list of place names.
-
-    //region Spinner Setup
-    // Assign the spinners
-    startSpinner = findViewById(R.id.distSpinnerStartingLoc);
-    endSpinner = findViewById(R.id.distSpinnerEndingLoc);
-
-    // Create the ArrayAdapters
-    ArrayAdapter<String> startArrayAdapter = new ArrayAdapter<String>(this,
-        android.R.layout.simple_spinner_dropdown_item, places.getPlaceNames());
-    ArrayAdapter<String> endArrayAdapter = new ArrayAdapter<String>(this,
-        android.R.layout.simple_spinner_dropdown_item, places.getPlaceNames());
-
-    // Assign the ArrayAdapters and onItemSelected listeners
-    startSpinner.setAdapter(startArrayAdapter);
-    startSpinner.setOnItemSelectedListener(this);
-    endSpinner.setAdapter(endArrayAdapter);
-    endSpinner.setOnItemSelectedListener(this);
-    //endregion
+    RPCMethodInformation mi = new RPCMethodInformation(null,
+        getResources().getString(R.string.default_url_string),
+        "getNames",
+        new Object[]{});
+    mi.callingActivity = this;
+    new AsyncPlacesConnect().execute(mi);
 
     //region Toolbar Setup
     Toolbar toolbar = findViewById(R.id.distanceCalcToolbar);
@@ -51,6 +45,28 @@ public class DistanceCalcActivity extends AppCompatActivity implements AdapterVi
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     getSupportActionBar().setDisplayShowHomeEnabled(true);
     //endregion
+  }
+
+  /**
+   * To be called after placeNames has been set from the AsyncPlacesConnect class
+   */
+  public void initializeSpinners() {
+
+    // Assign the spinners
+    startSpinner = findViewById(R.id.distSpinnerStartingLoc);
+    endSpinner = findViewById(R.id.distSpinnerEndingLoc);
+
+    // Create the ArrayAdapters
+    startArrayAdapter = new ArrayAdapter<>(this,
+        android.R.layout.simple_spinner_dropdown_item, placeNames);
+    endArrayAdapter = new ArrayAdapter<>(this,
+        android.R.layout.simple_spinner_dropdown_item, placeNames);
+
+    // Assign the ArrayAdapters and onItemSelected listeners
+    startSpinner.setAdapter(startArrayAdapter);
+    startSpinner.setOnItemSelectedListener(this);
+    endSpinner.setAdapter(endArrayAdapter);
+    endSpinner.setOnItemSelectedListener(this);
   }
 
   @Override
@@ -75,8 +91,29 @@ public class DistanceCalcActivity extends AppCompatActivity implements AdapterVi
    */
   @Override
   public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-    PlaceDescription startPlace = places.getPlaceWithName(startSpinner.getSelectedItem().toString());
-    PlaceDescription endPlace = places.getPlaceWithName(endSpinner.getSelectedItem().toString());
+    if (parent.getId() == R.id.distSpinnerStartingLoc) {
+      waitingOnStartPlace = true;
+      RPCMethodInformation mi = new RPCMethodInformation(null,
+          getResources().getString(R.string.default_url_string),
+          "get",
+          new String[]{startSpinner.getSelectedItem().toString()});
+      mi.callingActivity = this;
+      new AsyncPlacesConnect().execute(mi);
+    } else if (parent.getId() == R.id.distSpinnerEndingLoc) {
+      waitingOnEndPlace = true;
+      RPCMethodInformation mi = new RPCMethodInformation(null,
+          getResources().getString(R.string.default_url_string),
+          "get",
+          new String[]{endSpinner.getSelectedItem().toString()});
+      mi.callingActivity = this;
+      new AsyncPlacesConnect().execute(mi);
+    }
+  }
+
+  /**
+   * This method is called from the AsyncPlacesConnect class.
+   */
+  public void calculate() {
 
     // Calculate the new distance
     double newDistance = calculateDistance(startPlace.getLatitude(), startPlace.getLongitude(),
@@ -89,15 +126,6 @@ public class DistanceCalcActivity extends AppCompatActivity implements AdapterVi
         startPlace.getLongitude(), endPlace.getLatitude(), endPlace.getLongitude());
     TextView resultBearingTextView = findViewById(R.id.distResultBearingTextView);
     resultBearingTextView.setText(String.format(Locale.US, "%f °", newBearing));
-
-    // If you want to make conditionals for this method, don't go alone. Take this:
-    /*
-    if (mainActivity.getId() == R.id.distSpinnerStartingLoc) {
-
-    } else if (mainActivity.getId() == R.id.distSpinnerEndingLoc) {
-
-    }
-    */
   }
 
   private double calculateDistance(double lat1Dec, double lon1Dec, double lat2Dec, double lon2Dec) {

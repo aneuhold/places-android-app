@@ -24,6 +24,7 @@ import android.app.Activity;
  * -- <code>params</code> should be a String[] type with one String which is the name of the place.
  * - add
  * - getNames
+ * -- <code>params</code> should be a new Object[]{} with nothing in it
  * - resetFromJsonFile
  * - saveToJsonFile
  * - remove
@@ -56,5 +57,6 @@ public class RPCMethodInformation {
     this.urlString = urlString;
     this.params = params;
     this.resultAsJson = "{}";
+    this.callingActivity = null;
   }
 }

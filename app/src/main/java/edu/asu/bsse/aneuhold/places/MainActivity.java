@@ -82,12 +82,20 @@ public class MainActivity extends AppCompatActivity {
     recyclerViewLayoutManager = new LinearLayoutManager(this);
     recyclerView.setLayoutManager(recyclerViewLayoutManager);
 
-    /* Temporarily setup the new recyclerViewAdapter with no data while the async request is made.
+    /*
+     * Temporarily setup the new recyclerViewAdapter with no data while the async request is made.
      * Once the async request is finished, it will take care of updating placeNames in the
      * recyclerViewAdapter.
      */
     recyclerViewAdapter = new RecyclerViewAdapaterForPlaces();
     recyclerView.setAdapter(recyclerViewAdapter);
+
+    // Retrieve the list of place names.
+    RPCMethodInformation mi = new RPCMethodInformation(this,
+        getResources().getString(R.string.default_url_string),
+        "getNames",
+        new Object[]{});
+    new AsyncPlacesConnect().execute(mi);
     //endregion
   }
 
@@ -192,6 +200,7 @@ public class MainActivity extends AppCompatActivity {
 
   public void addPlaceAfterDeletion() {
     if (waitingForDelete) {
+      waitingForDelete = false;
 
       // Initiate the addition.
       RPCMethodInformation mi = new RPCMethodInformation(
@@ -200,7 +209,6 @@ public class MainActivity extends AppCompatActivity {
           "add",
           new Object[]{updatedPlaceDescription.toJsonObj()});
       new AsyncPlacesConnect().execute(mi);
-      waitingForDelete = false;
     }
   }
 

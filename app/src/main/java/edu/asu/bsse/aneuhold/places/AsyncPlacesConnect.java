@@ -111,24 +111,50 @@ public class AsyncPlacesConnect extends AsyncTask<RPCMethodInformation, Integer,
         }
         String[] names = al.toArray(new String[0]);
 
-        // Update the mainActivity and the recyclerViewAdapter placeNames
-        res.mainActivity.placeNames = names;
-        res.mainActivity.recyclerViewAdapter.placeNames = names;
-        res.mainActivity.recyclerViewAdapter.notifyDataSetChanged();
+        if (res.mainActivity != null) {
+
+          // Update the mainActivity and the recyclerViewAdapter placeNames
+          res.mainActivity.placeNames = names;
+          res.mainActivity.recyclerViewAdapter.placeNames = names;
+          res.mainActivity.recyclerViewAdapter.notifyDataSetChanged();
+        }
+
+        if (res.callingActivity != null &&
+            res.callingActivity.getClass().getSimpleName().equals("DistanceCalcActivity")) {
+          System.out.println("The calling activity was DistanceCalcActivity");
+          DistanceCalcActivity distanceCalcActivity = (DistanceCalcActivity) res.callingActivity;
+          distanceCalcActivity.placeNames = names;
+          distanceCalcActivity.initializeSpinners();
+        }
       }
 
-      /*
-       * Should only be called from within the PlaceDetailsActivity class.
-       */
       else if (res.method.equals("get")) {
+
         JSONObject jo = new JSONObject(res.resultAsJson);
         PlaceDescription place = new PlaceDescription(jo.getJSONObject("result"));
-        PlaceDetailsActivity placeDetailsActivity = (PlaceDetailsActivity) res.callingActivity;
-        placeDetailsActivity.placeDescription = place;
-        placeDetailsActivity.hydrateTextFields();
+
+        if (res.callingActivity != null &&
+            res.callingActivity.getClass().getSimpleName().equals("PlaceDetailsActivity")) {
+          PlaceDetailsActivity placeDetailsActivity = (PlaceDetailsActivity) res.callingActivity;
+          placeDetailsActivity.placeDescription = place;
+          placeDetailsActivity.hydrateTextFields();
+        } else if (res.callingActivity != null &&
+            res.callingActivity.getClass().getSimpleName().equals("DistanceCalcActivity")) {
+          DistanceCalcActivity distanceCalcActivity = (DistanceCalcActivity) res.callingActivity;
+          if (distanceCalcActivity.waitingOnStartPlace) {
+            distanceCalcActivity.startPlace = place;
+            distanceCalcActivity.waitingOnStartPlace = false;
+            distanceCalcActivity.calculate();
+          } else if (distanceCalcActivity.waitingOnEndPlace) {
+            distanceCalcActivity.endPlace = place;
+            distanceCalcActivity.waitingOnEndPlace = false;
+            distanceCalcActivity.calculate();
+          }
+        }
+
       }
       else if (res.method.equals("add")) {
-        // add Method
+        System.out.println("Entered the addition method of the AsyncPlacesConnect class");
 
         // Finished adding a place. Refresh the list of places by going back to the server for names
         try {
@@ -141,8 +167,10 @@ public class AsyncPlacesConnect extends AsyncTask<RPCMethodInformation, Integer,
         }
 
       }
-      else if (res.method.equals("delete")) {
+      else if (res.method.equals("remove")) {
         if (res.mainActivity.waitingForDelete) {
+
+          System.out.println("The add place after remove method is about to be called");
           res.mainActivity.addPlaceAfterDeletion();
         } else {
 
