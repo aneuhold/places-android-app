@@ -8,6 +8,27 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ * Copyright 2019 Anton G Neuhold Jr,
+ *
+ * This software is the intellectual property of the author, and can not be
+ * distributed, used, copied, or reproduced, in whole or in part, for any
+ * purpose, commercial or otherwise. The author grants the ASU Software
+ * Engineering program the right to copy, execute, and evaluate this work for
+ * the purpose of determining performance of the author in coursework, and for
+ * Software Engineering program evaluation, so long as this copyright and
+ * right-to-use statement is kept in-tact in such use. All other uses are
+ * prohibited and reserved to the author.<br>
+ * <br>
+ *
+ * Purpose: An adapter for the RecyclerView in the MainActivity.
+ *
+ * SER 423
+ * see http://quay.poly.asu.edu/Mobile/
+ * @author Anton Neuhold mailto:aneuhold@asu.edu
+ *         Software Engineering
+ * @version November 10, 2019
+ */
 public class RecyclerViewAdapaterForPlaces extends RecyclerView.Adapter {
   public String[] placeNames;
 
@@ -31,8 +52,7 @@ public class RecyclerViewAdapaterForPlaces extends RecyclerView.Adapter {
    * to retrieve the actual data needed for this RecyclerViewAdapterForPlaces object.
    */
   public RecyclerViewAdapaterForPlaces() {
-    String[] loadingString = {"Loading places..."};
-    this.placeNames = loadingString;
+    this.placeNames = new String[]{"Loading places..."};
   }
 
   public RecyclerViewAdapaterForPlaces(String[] placeNames) {
@@ -47,8 +67,7 @@ public class RecyclerViewAdapaterForPlaces extends RecyclerView.Adapter {
     CardView cardView = (CardView) LayoutInflater.from(parent.getContext())
         .inflate(R.layout.place_card_view, parent, false);
 
-    PlaceViewHolder placeViewHolder = new PlaceViewHolder(cardView);
-    return placeViewHolder;
+    return new PlaceViewHolder(cardView);
   }
 
   @Override

@@ -39,7 +39,7 @@ import java.io.Serializable;
  * see http://quay.poly.asu.edu/Mobile/
  * @author Anton Neuhold mailto:aneuhold@asu.edu
  *         Software Engineering
- * @version October 20, 2019
+ * @version November 10, 2019
  */
 public class PlaceDescription implements Serializable {
   private String placeName;

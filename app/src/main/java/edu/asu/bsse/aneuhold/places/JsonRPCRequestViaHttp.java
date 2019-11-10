@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
-/*
+/**
  * Copyright (c) 2018 Tim Lindquist,
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,7 +48,7 @@ import java.util.zip.GZIPInputStream;
  * prohibited and reserved to the author.<br>
  * <br>
  *
- * Purpose: CHANGE ME
+ * Purpose: Provides the framework for requesting JSON RPC methods and data over HTTP.
  *
  * SER 423
  * see http://quay.poly.asu.edu/Mobile/
@@ -66,7 +66,7 @@ public class JsonRPCRequestViaHttp {
   public JsonRPCRequestViaHttp(URL url, MainActivity parent) {
     this.url = url;
     this.parent = parent;
-    this.headers = new HashMap<String, String>();
+    this.headers = new HashMap<>();
   }
 
   public void setHeader(String key, String value) {
@@ -75,8 +75,7 @@ public class JsonRPCRequestViaHttp {
 
   public String call(String requestData) throws Exception {
     android.util.Log.d(this.getClass().getSimpleName(),"in call, url: "+url.toString()+" requestData: "+requestData);
-    String respData = post(url, headers, requestData);
-    return respData;
+    return post(url, headers, requestData);
   }
 
   private String post(URL url, Map<String, String> headers, String data) throws Exception {
@@ -91,9 +90,7 @@ public class JsonRPCRequestViaHttp {
     connection.setRequestMethod("POST");
     connection.setDoOutput(true);
     connection.connect();
-    OutputStream out = null;
-    try {
-      out = connection.getOutputStream();
+    try (OutputStream out = connection.getOutputStream()) {
       out.write(data.getBytes());
       out.flush();
       out.close();
@@ -101,10 +98,6 @@ public class JsonRPCRequestViaHttp {
       if (statusCode != HttpURLConnection.HTTP_OK) {
         throw new Exception(
             "Unexpected status from post: " + statusCode);
-      }
-    } finally {
-      if (out != null) {
-        out.close();
       }
     }
     String responseEncoding = connection.getHeaderField("Content-Encoding");

@@ -14,6 +14,29 @@ import androidx.appcompat.widget.Toolbar;
 
 import java.util.Locale;
 
+/**
+ * Copyright 2019 Anton G Neuhold Jr,
+ *
+ * This software is the intellectual property of the author, and can not be
+ * distributed, used, copied, or reproduced, in whole or in part, for any
+ * purpose, commercial or otherwise. The author grants the ASU Software
+ * Engineering program the right to copy, execute, and evaluate this work for
+ * the purpose of determining performance of the author in coursework, and for
+ * Software Engineering program evaluation, so long as this copyright and
+ * right-to-use statement is kept in-tact in such use. All other uses are
+ * prohibited and reserved to the author.<br>
+ * <br>
+ *
+ * Purpose: Provides the Activity for the distance calculator. As the
+ * user changes the starting and ending location, the distance and bearing will
+ * be updated accordingly.
+ *
+ * SER 423
+ * see http://quay.poly.asu.edu/Mobile/
+ * @author Anton Neuhold mailto:aneuhold@asu.edu
+ *         Software Engineering
+ * @version November 10, 2019
+ */
 public class DistanceCalcActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
   private static final double EARTH_AVERAGE_RADIUS_MILES = 3958.8;
   public String[] placeNames;
@@ -136,17 +159,13 @@ public class DistanceCalcActivity extends AppCompatActivity implements AdapterVi
     double lat2Rad = Math.toRadians(lat2Dec);
     double lon2Rad = Math.toRadians(lon2Dec);
 
-    double r = EARTH_AVERAGE_RADIUS_MILES;
-
     // Haversine formula - https://en.wikipedia.org/wiki/Haversine_formula
-    double result = 2 * r * Math.asin(Math.sqrt(
+    return 2 * EARTH_AVERAGE_RADIUS_MILES * Math.asin(Math.sqrt(
         Math.pow(Math.sin((lat2Rad - lat1Rad) / 2), 2)
             + Math.cos(lat1Rad)
             * Math.cos(lat2Rad)
             * Math.pow(Math.sin((lon2Rad - lon1Rad) / 2), 2)
     ));
-
-    return result;
   }
 
   private double calculateBearingInDegrees(double lat1Dec, double lon1Dec, double lat2Dec,

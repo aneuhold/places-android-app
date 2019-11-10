@@ -24,13 +24,14 @@ import android.widget.EditText;
  * prohibited and reserved to the author.<br>
  * <br>
  *
- * Purpose: CHANGE ME
+ * Purpose: Provides the Activity for a specific place's details screen.
+ * This information is populated from a remote JSON RPC server.
  *
  * SER 423
  * see http://quay.poly.asu.edu/Mobile/
  * @author Anton Neuhold mailto:aneuhold@asu.edu
  *         Software Engineering
- * @version October 20, 2019
+ * @version November 10, 2019
  */
 public class PlaceDetailsActivity extends AppCompatActivity {
 
@@ -176,8 +177,8 @@ public class PlaceDetailsActivity extends AppCompatActivity {
     placeAddressTitleTextBox.setText(placeDescription.getAddressTitle());
     placeCategoryTextBox.setText(placeDescription.getCategory());
     placeAddressStreetTextBox.setText(placeDescription.getAddressStreet());
-    placeElevationTextBox.setText("" + placeDescription.getElevation());
-    placeLatitudeTextBox.setText("" + placeDescription.getLatitude());
-    placeLongitudeTextBox.setText("" + placeDescription.getLongitude());
+    placeElevationTextBox.setText(String.format("%s", placeDescription.getElevation()));
+    placeLatitudeTextBox.setText(String.format("%s", placeDescription.getLatitude()));
+    placeLongitudeTextBox.setText(String.format("%s", placeDescription.getLongitude()));
   }
 }

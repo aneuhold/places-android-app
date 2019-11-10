@@ -21,17 +21,16 @@ import org.json.JSONTokener;
  * prohibited and reserved to the author.<br>
  * <br>
  *
- * Purpose: Contains a library of PLaceDescription objects.
+ * Purpose: Contains a library of PLaceDescription objects. This class is currently not used because
+ * data is housed on the JSON RPC server.
  *
  * SER 423
  * see http://quay.poly.asu.edu/Mobile/
  * @author Anton Neuhold mailto:aneuhold@asu.edu
  *         Software Engineering
- * @version October 20, 2019
+ * @version November 10, 2019
  */
 public class PlaceLibrary implements Serializable {
-
-  //TODO: This class might not be relevant anymore. It depends. This might need to be deleted
 
   private ArrayList<PlaceDescription> placeDescriptions;
 

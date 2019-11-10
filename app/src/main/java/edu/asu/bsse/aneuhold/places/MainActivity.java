@@ -35,13 +35,15 @@ import java.io.Writer;
  * prohibited and reserved to the author.<br>
  * <br>
  *
- * Purpose: CHANGE ME
+ * Purpose: The primary activity for the app. This app allows a user to query different saved places
+ * on a remote JSONRPC server. It allows the user to edit, add, and delete those places as well as
+ * find the distance and bearing between any two locations.
  *
  * SER 423
  * see http://quay.poly.asu.edu/Mobile/
  * @author Anton Neuhold mailto:aneuhold@asu.edu
  *         Software Engineering
- * @version November 6, 2019
+ * @version November 10, 2019
  */
 public class MainActivity extends AppCompatActivity {
   public final static String PLACE_DESCRIPTION = "com.tonyneuhold.PlacesAndroidApp.PLACE_DESCRIPTION";
