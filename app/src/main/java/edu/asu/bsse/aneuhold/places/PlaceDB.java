@@ -12,8 +12,39 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.sql.SQLException;
 
+/**
+ * Copyright 2019 Anton G Neuhold Jr,
+ *
+ * This software is the intellectual property of the author, and can not be
+ * distributed, used, copied, or reproduced, in whole or in part, for any
+ * purpose, commercial or otherwise. The author grants the ASU Software
+ * Engineering program the right to copy, execute, and evaluate this work for
+ * the purpose of determining performance of the author in coursework, and for
+ * Software Engineering program evaluation, so long as this copyright and
+ * right-to-use statement is kept in-tact in such use. All other uses are
+ * prohibited and reserved to the author.<br>
+ * <br>
+ *
+ * Purpose: Initializes the database and copies it over to the user's local storage if necessary
+ * from the bundle. This way edits are possible. The database has one table named 'place' with the
+ * following fields:
+ *
+ * 0: name TEXT PRIMARY KEY,
+ * 1: description TEXT,
+ * 2: category TEXT,
+ * 3: address_title TEXT,
+ * 4: address_street TEXT,
+ * 5: elevation DOUBLE PRECISION,
+ * 6: latitude DOUBLE PRECISION,
+ * 7: longitude DOUBLE PRECISION
+ *
+ * SER 423
+ * see http://quay.poly.asu.edu/Mobile/
+ * @author Anton Neuhold mailto:aneuhold@asu.edu
+ *         Software Engineering
+ * @version November 10, 2019
+ */
 public class PlaceDB extends SQLiteOpenHelper {
   private static final boolean DEBUG_ON = true;
   private static final int DATABASE_VERSION = 1;
@@ -170,13 +201,6 @@ public class PlaceDB extends SQLiteOpenHelper {
       }
     }
     return placeDB;
-  }
-
-  @Override
-  public synchronized void close() {
-    if(placeDB != null)
-      placeDB.close();
-    super.close();
   }
 
   private void debug(String hdr, String msg){

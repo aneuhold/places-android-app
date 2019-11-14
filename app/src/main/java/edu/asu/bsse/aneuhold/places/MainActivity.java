@@ -3,6 +3,7 @@ package edu.asu.bsse.aneuhold.places;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteDatabaseLockedException;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,13 +17,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
 
 /**
  * Copyright 2019 Anton G Neuhold Jr,
@@ -58,8 +52,6 @@ public class MainActivity extends AppCompatActivity {
   private RecyclerView.LayoutManager recyclerViewLayoutManager;
   public String[] placeNames;
   public PlaceDescription updatedPlaceDescription;
-  public PlaceDB placeDBHelper;
-  public SQLiteDatabase placeDB;
 
   /**
    * Used for the situation where a place description is being updated. The place is deleted first,
@@ -75,10 +67,6 @@ public class MainActivity extends AppCompatActivity {
     // Create link to the toolbar
     Toolbar toolbar = findViewById(R.id.mainToolbar);
     setSupportActionBar(toolbar);
-
-    // Setup the DB
-    placeDBHelper = new PlaceDB(this);
-    placeDB = placeDBHelper.openDB();
 
     //region RecyclerView Setup
 
@@ -96,44 +84,27 @@ public class MainActivity extends AppCompatActivity {
     recyclerView.setLayoutManager(recyclerViewLayoutManager);
 
     // Retrieve the list of place names and setup recyclerViewAdapter
-    retrievePlaceNamesFromDB();
+    updatePlaceNamesFromDB();
     recyclerViewAdapter = new RecyclerViewAdapaterForPlaces(placeNames);
     recyclerView.setAdapter(recyclerViewAdapter);
 
     //endregion
   }
 
-  @Override
-  protected void onResume() {
-    super.onResume();
-    if (placeDBHelper == null) {
-      placeDBHelper = new PlaceDB(this);
-      placeDB = placeDBHelper.openDB();
-    } else if (placeDB == null) {
-      placeDB = placeDBHelper.openDB();
+  public void updatePlaceNamesFromDB() {
+    try (SQLiteDatabase placeDB = new PlaceDB(this).openDB()) {
+      Cursor namesCursor = placeDB.rawQuery("SELECT name FROM place", null);
+      placeNames = new String[namesCursor.getCount()];
+      namesCursor.moveToFirst();
+      for (int i = 0; i < namesCursor.getCount(); i++) {
+        placeNames[i] = namesCursor.getString(i);
+        namesCursor.moveToNext();
+      }
+      namesCursor.close();
+    } catch (Exception e) {
+      System.out.println("Error in updatePlaceNamesFromDB method");
+      e.printStackTrace();
     }
-  }
-
-  @Override
-  protected void onStop() {
-    super.onStop();
-    if (placeDB != null) {
-      placeDB.close();
-      placeDBHelper.close();
-    } else if (placeDBHelper != null) {
-      placeDBHelper.close();
-    }
-  }
-
-  public void retrievePlaceNamesFromDB() {
-    Cursor namesCursor = placeDB.rawQuery("SELECT name FROM place", null);
-    placeNames = new String[namesCursor.getCount()];
-    namesCursor.moveToFirst();
-    for (int i = 0; i < namesCursor.getCount(); i++) {
-      placeNames[i] = namesCursor.getString(i);
-      namesCursor.moveToNext();
-    }
-    namesCursor.close();
   }
 
   //region Option Menu methods
@@ -172,13 +143,13 @@ public class MainActivity extends AppCompatActivity {
   public void openPlaceDetailsActivity(View v) {
     Intent intent = new Intent(MainActivity.this, PlaceDetailsActivity.class);
 
-    // Get the place description from the view
+    // Get the place description name from the view
     CardView cardView = (CardView) v;
     TextView textView = cardView.findViewById(R.id.textView);
     String placeName = textView.getText().toString();
 
     /*
-     * Add the place name, and start the intent. The returned intent is expected to have the updated
+     * Add the place name, DB, then start the intent. The returned intent is expected to have the updated
      * PlaceDescription object which is handled by onActivityResult.
      */
     intent.putExtra(PLACE_NAME, placeName);
