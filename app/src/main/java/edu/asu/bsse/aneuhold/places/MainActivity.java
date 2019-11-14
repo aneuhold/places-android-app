@@ -1,6 +1,8 @@
 package edu.asu.bsse.aneuhold.places;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -56,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
   private RecyclerView.LayoutManager recyclerViewLayoutManager;
   public String[] placeNames;
   public PlaceDescription updatedPlaceDescription;
+  public PlaceDB placeDBHelper;
+  public SQLiteDatabase placeDB;
 
   /**
    * Used for the situation where a place description is being updated. The place is deleted first,
@@ -72,34 +76,67 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar = findViewById(R.id.mainToolbar);
     setSupportActionBar(toolbar);
 
+    // Setup the DB
+    placeDBHelper = new PlaceDB(this);
+    placeDB = placeDBHelper.openDB();
+
     //region RecyclerView Setup
+
     // Create link to the RecyclerView
     recyclerView = findViewById(R.id.recycler_view);
 
-    // use this setting to improve performance if you know that changes
-    // in content do not change the layout size of the RecyclerView
+    /*
+     Use this setting to improve performance if you know that changes
+     in content do not change the layout size of the RecyclerView
+    */
     recyclerView.setHasFixedSize(false);
 
     // Set the layout manager
     recyclerViewLayoutManager = new LinearLayoutManager(this);
     recyclerView.setLayoutManager(recyclerViewLayoutManager);
 
-    /*
-     * Temporarily setup the new recyclerViewAdapter with no data while the async request is made.
-     * Once the async request is finished, it will take care of updating placeNames in the
-     * recyclerViewAdapter.
-     */
-    recyclerViewAdapter = new RecyclerViewAdapaterForPlaces();
+    // Retrieve the list of place names and setup recyclerViewAdapter
+    retrievePlaceNamesFromDB();
+    recyclerViewAdapter = new RecyclerViewAdapaterForPlaces(placeNames);
     recyclerView.setAdapter(recyclerViewAdapter);
 
-    // Retrieve the list of place names.
-    RPCMethodInformation mi = new RPCMethodInformation(this,
-        getResources().getString(R.string.default_url_string),
-        "getNames",
-        new Object[]{});
-    new AsyncPlacesConnect().execute(mi);
     //endregion
   }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+    if (placeDBHelper == null) {
+      placeDBHelper = new PlaceDB(this);
+      placeDB = placeDBHelper.openDB();
+    } else if (placeDB == null) {
+      placeDB = placeDBHelper.openDB();
+    }
+  }
+
+  @Override
+  protected void onStop() {
+    super.onStop();
+    if (placeDB != null) {
+      placeDB.close();
+      placeDBHelper.close();
+    } else if (placeDBHelper != null) {
+      placeDBHelper.close();
+    }
+  }
+
+  public void retrievePlaceNamesFromDB() {
+    Cursor namesCursor = placeDB.rawQuery("SELECT name FROM place", null);
+    placeNames = new String[namesCursor.getCount()];
+    namesCursor.moveToFirst();
+    for (int i = 0; i < namesCursor.getCount(); i++) {
+      placeNames[i] = namesCursor.getString(i);
+      namesCursor.moveToNext();
+    }
+    namesCursor.close();
+  }
+
+  //region Option Menu methods
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -124,6 +161,8 @@ public class MainActivity extends AppCompatActivity {
     }
     return true;
   }
+
+  //endregion
 
   /**
    * Opens an instance of PlaceDetailsActivity using the text of the clicked TextView as the
@@ -200,6 +239,9 @@ public class MainActivity extends AppCompatActivity {
     }
   }
 
+  /**
+   * Adds a place after one was deleted. This is called after an Async task completes.
+   */
   public void addPlaceAfterDeletion() {
     if (waitingForDelete) {
       waitingForDelete = false;
