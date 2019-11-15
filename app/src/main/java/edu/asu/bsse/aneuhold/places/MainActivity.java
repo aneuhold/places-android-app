@@ -1,5 +1,7 @@
 package edu.asu.bsse.aneuhold.places;
 
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -51,13 +53,6 @@ public class MainActivity extends AppCompatActivity {
   public RecyclerViewAdapaterForPlaces recyclerViewAdapter;
   private RecyclerView.LayoutManager recyclerViewLayoutManager;
   public String[] placeNames;
-  public PlaceDescription updatedPlaceDescription;
-
-  /**
-   * Used for the situation where a place description is being updated. The place is deleted first,
-   * then the place is added back in the addPlaceAfterDeletion method.
-   */
-  public boolean waitingForDelete = false;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -84,27 +79,11 @@ public class MainActivity extends AppCompatActivity {
     recyclerView.setLayoutManager(recyclerViewLayoutManager);
 
     // Retrieve the list of place names and setup recyclerViewAdapter
-    updatePlaceNamesFromDB();
+    placeNames = PlaceDB.getPlaceNamesFromDB(this);
     recyclerViewAdapter = new RecyclerViewAdapaterForPlaces(placeNames);
     recyclerView.setAdapter(recyclerViewAdapter);
 
     //endregion
-  }
-
-  public void updatePlaceNamesFromDB() {
-    try (SQLiteDatabase placeDB = new PlaceDB(this).openDB()) {
-      Cursor namesCursor = placeDB.rawQuery("SELECT name FROM place", null);
-      placeNames = new String[namesCursor.getCount()];
-      namesCursor.moveToFirst();
-      for (int i = 0; i < namesCursor.getCount(); i++) {
-        placeNames[i] = namesCursor.getString(i);
-        namesCursor.moveToNext();
-      }
-      namesCursor.close();
-    } catch (Exception e) {
-      System.out.println("Error in updatePlaceNamesFromDB method");
-      e.printStackTrace();
-    }
   }
 
   //region Option Menu methods
@@ -171,59 +150,29 @@ public class MainActivity extends AppCompatActivity {
         // If everything came back okay. The user may have made edits
         PlaceDescription placeDescription = (PlaceDescription) data.getSerializableExtra(PLACE_DESCRIPTION);
         System.out.println("The returned placeDescription is: " + placeDescription.toString());
-        updatedPlaceDescription = placeDescription;
-
-        // Mark the MainActivity as waiting for deletion
-        this.waitingForDelete = true;
-
-        // Initiate the delete, which will then trigger the addition after it is completed.
-        RPCMethodInformation mi = new RPCMethodInformation(
-            this,
-            getResources().getString(R.string.default_url_string),
-            "remove",
-            new String[]{placeDescription.getPlaceName()});
-        new AsyncPlacesConnect().execute(mi);
+        PlaceDB.updatePlaceDescriptionInDB(placeDescription, this);
 
       } else if (resultCode == PlaceDetailsActivity.DELETE_PLACE_DESCRIPTION) {
+
         // If the user decided to delete the entry
         PlaceDescription placeDescription = (PlaceDescription) data.getSerializableExtra(PLACE_DESCRIPTION);
         String placeName = placeDescription.getPlaceName();
-        RPCMethodInformation mi = new RPCMethodInformation(
-            this,
-            getResources().getString(R.string.default_url_string),
-            "remove",
-            new String[]{placeName});
-        new AsyncPlacesConnect().execute(mi);
+        PlaceDB.deletePlaceFromDB(placeName, this);
+        String[] newPlaceNames = PlaceDB.getPlaceNamesFromDB(this);
+        placeNames = newPlaceNames;
+        recyclerViewAdapter.placeNames = newPlaceNames;
+        recyclerViewAdapter.notifyDataSetChanged();
       }
     } else if (requestCode == ADD_PLACE_DESCRIPTION_REQUEST) {
       if (resultCode == RESULT_OK) {
         PlaceDescription placeDescription = (PlaceDescription) data.getSerializableExtra(PLACE_DESCRIPTION);
+        PlaceDB.addPlaceInDB(placeDescription, this);
+        String[] newPlaceNames = PlaceDB.getPlaceNamesFromDB(this);
 
-        // Initiate the addition.
-        RPCMethodInformation mi = new RPCMethodInformation(
-            this,
-            getResources().getString(R.string.default_url_string),
-            "add",
-            new Object[]{placeDescription.toJsonObj()});
-        new AsyncPlacesConnect().execute(mi);
+        placeNames = newPlaceNames;
+        recyclerViewAdapter.placeNames = newPlaceNames;
+        recyclerViewAdapter.notifyDataSetChanged();
       }
-    }
-  }
-
-  /**
-   * Adds a place after one was deleted. This is called after an Async task completes.
-   */
-  public void addPlaceAfterDeletion() {
-    if (waitingForDelete) {
-      waitingForDelete = false;
-
-      // Initiate the addition.
-      RPCMethodInformation mi = new RPCMethodInformation(
-          this,
-          getResources().getString(R.string.default_url_string),
-          "add",
-          new Object[]{updatedPlaceDescription.toJsonObj()});
-      new AsyncPlacesConnect().execute(mi);
     }
   }
 

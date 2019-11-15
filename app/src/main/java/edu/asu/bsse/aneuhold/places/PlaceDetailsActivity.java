@@ -65,7 +65,7 @@ public class PlaceDetailsActivity extends AppCompatActivity {
      */
     if (!isNewPlaceDescription) {
       placeName = intent.getStringExtra(MainActivity.PLACE_NAME);
-      getPlaceDescriptionFromDB();
+      placeDescription = PlaceDB.getPlaceDescriptionFromDB(placeName, this);
     }
 
     // Hydrate the fields if the placeDescription is valid
@@ -81,30 +81,6 @@ public class PlaceDetailsActivity extends AppCompatActivity {
     Toolbar toolbar = findViewById(R.id.mainToolbar);
     setSupportActionBar(toolbar);
     //endregion
-  }
-
-  public void getPlaceDescriptionFromDB() {
-    try (SQLiteDatabase placeDB = new PlaceDB(this).openDB()) {
-      Cursor cursor = placeDB.rawQuery("SELECT * FROM place WHERE name=?",
-          new String[]{placeName});
-      cursor.moveToFirst();
-      placeDescription = new PlaceDescription();
-      placeDescription.setPlaceName(placeName);
-
-      // Pull the data from the cursor to the PlaceDescription object
-      placeDescription.setPlaceDescription(cursor.getString(1));
-      placeDescription.setCategory(cursor.getString(2));
-      placeDescription.setAddressTitle(cursor.getString(3));
-      placeDescription.setAddressStreet(cursor.getString(4));
-      placeDescription.setElevation(cursor.getDouble(5));
-      placeDescription.setLatitude(cursor.getDouble(6));
-      placeDescription.setLongitude(cursor.getDouble(7));
-
-      cursor.close();
-    } catch (Exception e) {
-      System.out.println("Error in getPlaceDescriptionFromDB method");
-      e.printStackTrace();
-    }
   }
 
   //region Menu Methods

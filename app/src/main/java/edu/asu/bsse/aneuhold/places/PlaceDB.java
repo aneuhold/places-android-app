@@ -1,5 +1,6 @@
 package edu.asu.bsse.aneuhold.places;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -206,6 +207,102 @@ public class PlaceDB extends SQLiteOpenHelper {
   private void debug(String hdr, String msg){
     if(DEBUG_ON){
       android.util.Log.d(hdr,msg);
+    }
+  }
+
+  public static void deletePlaceFromDB(String name, Context context) {
+    try (SQLiteDatabase placeDB = new PlaceDB(context).openDB()) {
+      placeDB.delete("place", "name=?", new String[]{name});
+    } catch (Exception e) {
+      System.out.println("Error in deletePlaceFromDB method");
+      e.printStackTrace();
+    }
+  }
+
+  public static String[] getPlaceNamesFromDB(Context context) {
+    String[] placeNames = new String[]{"Loading places..."};
+    try (SQLiteDatabase placeDB = new PlaceDB(context).openDB()) {
+      Cursor namesCursor = placeDB.rawQuery("SELECT name FROM place", null);
+      placeNames = new String[namesCursor.getCount()];
+      namesCursor.moveToFirst();
+      for (int i = 0; i < namesCursor.getCount(); i++) {
+        placeNames[i] = namesCursor.getString(0);
+        namesCursor.moveToNext();
+      }
+      namesCursor.close();
+    } catch (Exception e) {
+      System.out.println("Error in updatePlaceNamesFromDB method");
+      e.printStackTrace();
+    }
+    return placeNames;
+  }
+
+  public static PlaceDescription getPlaceDescriptionFromDB(String placeName, Context context) {
+    PlaceDescription placeDescription = new PlaceDescription();
+    try (SQLiteDatabase placeDB = new PlaceDB(context).openDB()) {
+      Cursor cursor = placeDB.rawQuery("SELECT * FROM place WHERE name=?",
+          new String[]{placeName});
+      cursor.moveToFirst();
+      placeDescription.setPlaceName(placeName);
+
+      // Pull the data from the cursor to the PlaceDescription object
+      placeDescription.setPlaceDescription(cursor.getString(1));
+      placeDescription.setCategory(cursor.getString(2));
+      placeDescription.setAddressTitle(cursor.getString(3));
+      placeDescription.setAddressStreet(cursor.getString(4));
+      placeDescription.setElevation(cursor.getDouble(5));
+      placeDescription.setLatitude(cursor.getDouble(6));
+      placeDescription.setLongitude(cursor.getDouble(7));
+
+      System.out.println("The latitude is: " + cursor.getDouble(6));
+
+      cursor.close();
+    } catch (Exception e) {
+      System.out.println("Error in getPlaceDescriptionFromDB method");
+      e.printStackTrace();
+    }
+    return placeDescription;
+  }
+
+  public static void updatePlaceDescriptionInDB(PlaceDescription updatedPlaceDescription, Context context) {
+    String placeName = updatedPlaceDescription.getPlaceName();
+    try (SQLiteDatabase placeDB = new PlaceDB(context).openDB()) {
+      ContentValues newValue = new ContentValues();
+      newValue.put("description", updatedPlaceDescription.getPlaceDescription());
+      newValue.put("category", updatedPlaceDescription.getCategory());
+      newValue.put("address_title", updatedPlaceDescription.getAddressTitle());
+      newValue.put("address_street", updatedPlaceDescription.getAddressStreet());
+      newValue.put("elevation", updatedPlaceDescription.getElevation());
+      newValue.put("latitude", updatedPlaceDescription.getLatitude());
+      newValue.put("longitude", updatedPlaceDescription.getLongitude());
+
+      // Update the value in the place table
+      placeDB.update("place", newValue, "name=?", new String[]{placeName});
+
+    } catch (Exception e) {
+      System.out.println("Error in updatePlaceDescriptionInDB method");
+      e.printStackTrace();
+    }
+  }
+
+  public static void addPlaceInDB(PlaceDescription placeDescription, Context context) {
+    try (SQLiteDatabase placeDB = new PlaceDB(context).openDB()) {
+      ContentValues newValue = new ContentValues();
+      newValue.put("name", placeDescription.getPlaceName());
+      newValue.put("description", placeDescription.getPlaceDescription());
+      newValue.put("category", placeDescription.getCategory());
+      newValue.put("address_title", placeDescription.getAddressTitle());
+      newValue.put("address_street", placeDescription.getAddressStreet());
+      newValue.put("elevation", placeDescription.getElevation());
+      newValue.put("latitude", placeDescription.getLatitude());
+      newValue.put("longitude", placeDescription.getLongitude());
+
+      // Insert the value into the place table
+      placeDB.insert("place", null, newValue);
+
+    } catch (Exception e) {
+      System.out.println("Error in updatePlaceDescriptionInDB method");
+      e.printStackTrace();
     }
   }
 }
