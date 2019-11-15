@@ -1,6 +1,5 @@
 package edu.asu.bsse.aneuhold.places;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -35,7 +34,7 @@ import java.util.Locale;
  * see http://quay.poly.asu.edu/Mobile/
  * @author Anton Neuhold mailto:aneuhold@asu.edu
  *         Software Engineering
- * @version November 10, 2019
+ * @version November 15, 2019
  */
 public class DistanceCalcActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
   private static final double EARTH_AVERAGE_RADIUS_MILES = 3958.8;

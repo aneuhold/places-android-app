@@ -1,11 +1,6 @@
 package edu.asu.bsse.aneuhold.places;
 
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteDatabaseLockedException;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,14 +29,14 @@ import androidx.recyclerview.widget.RecyclerView;
  * <br>
  *
  * Purpose: The primary activity for the app. This app allows a user to query different saved places
- * on a remote JSONRPC server. It allows the user to edit, add, and delete those places as well as
+ * on a local SQLite3 database. It allows the user to edit, add, and delete those places as well as
  * find the distance and bearing between any two locations.
  *
  * SER 423
  * see http://quay.poly.asu.edu/Mobile/
  * @author Anton Neuhold mailto:aneuhold@asu.edu
  *         Software Engineering
- * @version November 10, 2019
+ * @version November 15, 2019
  */
 public class MainActivity extends AppCompatActivity {
   public final static String PLACE_DESCRIPTION = "com.tonyneuhold.PlacesAndroidApp.PLACE_DESCRIPTION";

@@ -5,8 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,13 +25,13 @@ import android.widget.EditText;
  * <br>
  *
  * Purpose: Provides the Activity for a specific place's details screen.
- * This information is populated from a remote JSON RPC server.
+ * This information is populated from a local SQLite3 database.
  *
  * SER 423
  * see http://quay.poly.asu.edu/Mobile/
  * @author Anton Neuhold mailto:aneuhold@asu.edu
  *         Software Engineering
- * @version November 14, 2019
+ * @version November 15, 2019
  */
 public class PlaceDetailsActivity extends AppCompatActivity {
 
