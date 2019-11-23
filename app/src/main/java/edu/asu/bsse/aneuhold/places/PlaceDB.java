@@ -140,7 +140,7 @@ public class PlaceDB extends SQLiteOpenHelper {
             while (!c.isAfterLast()) {
               String crsName = c.getString(0);
               int crsid = c.getInt(1);
-              debug("PlaceDB --> checkDB", "Place table has CourseName: " +
+              debug("PlaceDB --> checkDB", "Place table has place name: " +
                   crsName + "\tname: " + crsid);
               c.moveToNext();
             }
@@ -151,7 +151,7 @@ public class PlaceDB extends SQLiteOpenHelper {
         }
       }
     }catch(SQLiteException e){
-      android.util.Log.w("CourseDB->checkDB",e.getMessage());
+      android.util.Log.w("PlaceDB->checkDB",e.getMessage());
     }
     if(checkDB != null){
       checkDB.close();
@@ -164,7 +164,7 @@ public class PlaceDB extends SQLiteOpenHelper {
       if(!checkDB()){
 
         // only copy the database if it doesn't already exist in my database directory
-        debug("CourseDB --> copyDB", "checkDB returned false, starting copy");
+        debug("PlaceDB --> copyDB", "checkDB returned false, starting copy");
         InputStream ip =  context.getResources().openRawResource(R.raw.placedb);
 
         // make sure the database path exists. if not, create it.
