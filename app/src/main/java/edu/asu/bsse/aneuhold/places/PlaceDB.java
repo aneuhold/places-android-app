@@ -109,7 +109,7 @@ public class PlaceDB extends SQLiteOpenHelper {
    * Does the database exist and has it been initialized? This method determines whether
    * the database needs to be copied to the data/data/pkgName/files directory by
    * checking whether the file exists. If it does it checks to see whether the db is
-   * uninitialized or whether it has the course table.
+   * uninitialized or whether it has the place table.
    *
    * @return false if the database file needs to be copied from the assets directory, true
    * otherwise.
