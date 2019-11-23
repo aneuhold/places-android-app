@@ -58,7 +58,7 @@ public class PlaceDB extends SQLiteOpenHelper {
     super(context,dbName, null, DATABASE_VERSION);
     this.context = context;
 
-    // place the database in the files directory. Could also place it in the databases directory
+    // Place the database in the files directory
     // with dbPath = context.getDatabasePath("dbName"+".db").getPath();
     dbPath = context.getFilesDir().getPath()+"/";
     android.util.Log.d(this.getClass().getSimpleName(),"db path is: "+
@@ -134,19 +134,6 @@ public class PlaceDB extends SQLiteOpenHelper {
                 ((tabChk.isAfterLast() ? "empty" : tabChk.getString(0))));
             placeTableExists = !tabChk.isAfterLast();
           }
-          if (placeTableExists) {
-            Cursor c = checkDB.rawQuery("SELECT * FROM place", null);
-            c.moveToFirst();
-            while (!c.isAfterLast()) {
-              String crsName = c.getString(0);
-              int crsid = c.getInt(1);
-              debug("PlaceDB --> checkDB", "Place table has CourseName: " +
-                  crsName + "\tname: " + crsid);
-              c.moveToNext();
-            }
-            placeTableExists = true;
-            c.close();
-          }
           if (tabChk != null) tabChk.close();
         }
       }
@@ -163,7 +150,7 @@ public class PlaceDB extends SQLiteOpenHelper {
     try {
       if(!checkDB()){
 
-        // only copy the database if it doesn't already exist in my database directory
+        // Only copy the database if it doesn't already exist in my database directory
         debug("CourseDB --> copyDB", "checkDB returned false, starting copy");
         InputStream ip =  context.getResources().openRawResource(R.raw.placedb);
 
@@ -176,7 +163,7 @@ public class PlaceDB extends SQLiteOpenHelper {
         OutputStream output = new FileOutputStream(op);
         byte[] buffer = new byte[1024];
         int length;
-        while ((length = ip.read(buffer))>0){
+        while ((length = ip.read(buffer))>0) {
           output.write(buffer, 0, length);
         }
         output.flush();
@@ -190,10 +177,10 @@ public class PlaceDB extends SQLiteOpenHelper {
 
   public SQLiteDatabase openDB() {
     String myPath = dbPath + dbName + ".db";
-    if(checkDB()) {
+    if (checkDB()) {
       placeDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE);
       debug("PlaceDB --> openDB", "opened db at path: " + placeDB.getPath());
-    }else{
+    } else {
       try {
         this.copyDB();
         placeDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE);
