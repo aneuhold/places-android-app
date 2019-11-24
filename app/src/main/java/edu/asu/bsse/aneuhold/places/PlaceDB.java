@@ -62,7 +62,7 @@ public class PlaceDB extends SQLiteOpenHelper {
     // with dbPath = context.getDatabasePath("dbName"+".db").getPath();
     dbPath = context.getFilesDir().getPath()+"/";
     android.util.Log.d(this.getClass().getSimpleName(),"db path is: "+
-        context.getDatabasePath("coursedb"));
+        context.getDatabasePath("placedb"));
     android.util.Log.d(this.getClass().getSimpleName(),"dbpath: "+dbPath);
   }
 

@@ -1,6 +1,5 @@
 package edu.asu.bsse.aneuhold.places;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -16,7 +15,6 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -49,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
   public final static String PLACE_NAMES = "com.tonyneuhold.PlacesAndroidApp.PLACE_NAMES";
   public final static int UPDATE_PLACE_DESCRIPTION_REQUEST = 0;
   public final static int ADD_PLACE_DESCRIPTION_REQUEST = 1;
+  public final static int OPEN_MAP = 2;
   private RecyclerView recyclerView;
   public RecyclerViewAdapaterForPlaces recyclerViewAdapter;
   private RecyclerView.LayoutManager recyclerViewLayoutManager;
@@ -108,7 +107,9 @@ public class MainActivity extends AppCompatActivity {
     } else if (item.getItemId() == R.id.menu_action_map) {
 
       // Start the map activity
-
+      Intent intent = new Intent(MainActivity.this, MapActivity.class);
+      intent.putExtra("requestCode", OPEN_MAP);
+      startActivityForResult(intent, OPEN_MAP);
 
     } else if (item.getItemId() == R.id.menu_action_calculate_distance) {
 
@@ -156,35 +157,47 @@ public class MainActivity extends AppCompatActivity {
    */
   @Override
   protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-    if (requestCode == UPDATE_PLACE_DESCRIPTION_REQUEST) {
-      if (resultCode == RESULT_OK) {
+    super.onActivityResult(requestCode, resultCode, data);
+    switch (requestCode) {
+      case UPDATE_PLACE_DESCRIPTION_REQUEST:
+        if (resultCode == RESULT_OK) {
 
-        // If everything came back okay. The user may have made edits
-        PlaceDescription placeDescription = (PlaceDescription) data.getSerializableExtra(PLACE_DESCRIPTION);
-        System.out.println("The returned placeDescription is: " + placeDescription.toString());
-        PlaceDB.updatePlaceDescriptionInDB(placeDescription, this);
+          // If everything came back okay. The user may have made edits
+          PlaceDescription placeDescription = (PlaceDescription) data.getSerializableExtra(PLACE_DESCRIPTION);
+          System.out.println("The returned placeDescription is: " + placeDescription.toString());
+          PlaceDB.updatePlaceDescriptionInDB(placeDescription, this);
 
-      } else if (resultCode == PlaceDetailsActivity.DELETE_PLACE_DESCRIPTION) {
+        } else if (resultCode == PlaceDetailsActivity.DELETE_PLACE_DESCRIPTION) {
 
-        // If the user decided to delete the entry
-        PlaceDescription placeDescription = (PlaceDescription) data.getSerializableExtra(PLACE_DESCRIPTION);
-        String placeName = placeDescription.getPlaceName();
-        PlaceDB.deletePlaceFromDB(placeName, this);
+          // If the user decided to delete the entry
+          PlaceDescription placeDescription = (PlaceDescription) data.getSerializableExtra(PLACE_DESCRIPTION);
+          String placeName = placeDescription.getPlaceName();
+          PlaceDB.deletePlaceFromDB(placeName, this);
+          String[] newPlaceNames = PlaceDB.getPlaceNamesFromDB(this);
+          placeNames = new ArrayList<>(Arrays.asList(newPlaceNames));
+          recyclerViewAdapter.placeNames = placeNames;
+          recyclerViewAdapter.notifyDataSetChanged();
+        }
+        break;
+      case ADD_PLACE_DESCRIPTION_REQUEST:
+        if (resultCode == RESULT_OK) {
+          PlaceDescription placeDescription = (PlaceDescription) data.getSerializableExtra(PLACE_DESCRIPTION);
+          PlaceDB.addPlaceInDB(placeDescription, this);
+          String[] newPlaceNames = PlaceDB.getPlaceNamesFromDB(this);
+
+          placeNames = new ArrayList<>(Arrays.asList(newPlaceNames));
+          recyclerViewAdapter.placeNames = placeNames;
+          recyclerViewAdapter.notifyDataSetChanged();
+        }
+        break;
+      case OPEN_MAP:
+
+        System.out.println("The map returned");
         String[] newPlaceNames = PlaceDB.getPlaceNamesFromDB(this);
         placeNames = new ArrayList<>(Arrays.asList(newPlaceNames));
         recyclerViewAdapter.placeNames = placeNames;
         recyclerViewAdapter.notifyDataSetChanged();
-      }
-    } else if (requestCode == ADD_PLACE_DESCRIPTION_REQUEST) {
-      if (resultCode == RESULT_OK) {
-        PlaceDescription placeDescription = (PlaceDescription) data.getSerializableExtra(PLACE_DESCRIPTION);
-        PlaceDB.addPlaceInDB(placeDescription, this);
-        String[] newPlaceNames = PlaceDB.getPlaceNamesFromDB(this);
-
-        placeNames = new ArrayList<>(Arrays.asList(newPlaceNames));
-        recyclerViewAdapter.placeNames = placeNames;
-        recyclerViewAdapter.notifyDataSetChanged();
-      }
+        break;
     }
   }
 

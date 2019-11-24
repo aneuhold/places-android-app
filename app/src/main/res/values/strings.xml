@@ -9,7 +9,11 @@
     <string name="place_label_elevation">Elevation</string>
     <string name="place_label_latitude">Latitude</string>
     <string name="place_label_longitude">Longitude</string>
+
     <string name="example_text">Example Text</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">Ok</string>
+
     <string name="menu_delete">Delete Place</string>
     <string name="menu_add_place">Add Place</string>
     <string name="menu_sync_server_to_local_db">Sync JSON Server to Local DB</string>
@@ -21,5 +25,6 @@
     <string name="distance_calc_label_ending_location">Ending Location</string>
     <string name="distance_calc_label_result_distance">Distance:</string>
     <string name="distance_calc_label_result_initial_bearing">Initial Bearing:</string>
+    <string name="map_dialog_text">Enter New Place Name</string>
     <string name="default_url_string">http://10.0.2.2:8080/</string>
 </resources>
