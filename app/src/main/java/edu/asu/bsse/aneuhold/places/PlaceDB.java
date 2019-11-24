@@ -44,7 +44,7 @@ import java.io.OutputStream;
  * see http://quay.poly.asu.edu/Mobile/
  * @author Anton Neuhold mailto:aneuhold@asu.edu
  *         Software Engineering
- * @version November 10, 2019
+ * @version November 24, 2019
  */
 public class PlaceDB extends SQLiteOpenHelper {
   private static final boolean DEBUG_ON = false;

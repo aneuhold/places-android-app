@@ -37,13 +37,14 @@ import java.util.HashMap;
  * prohibited and reserved to the author.<br>
  * <br>
  *
- * Purpose: CHANGE ME
+ * Purpose: The primary activity for the map interface. Allows adding of places by long pressing
+ * the screen where the new place should be located.
  *
  * SER 423
  * see http://quay.poly.asu.edu/Mobile/
  * @author Anton Neuhold mailto:aneuhold@asu.edu
  *         Software Engineering
- * @version November 22, 2019
+ * @version November 24, 2019
  */
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback,
     GoogleMap.OnMapLongClickListener, DialogInterface.OnClickListener {
