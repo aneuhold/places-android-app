@@ -12,7 +12,10 @@
     <string name="example_text">Example Text</string>
     <string name="menu_delete">Delete Place</string>
     <string name="menu_add_place">Add Place</string>
+    <string name="menu_sync_server_to_local_db">Sync JSON Server to Local DB</string>
+    <string name="menu_sync_local_db_to_server">Sync Local DB to JSON Server</string>
     <string name="menu_calculate_distance">Calculate Distance</string>
+    <string name="menu_map">Map</string>
     <string name="distance_calc_label_title">Distance Calculator</string>
     <string name="distance_calc_label_starting_location">Starting Location</string>
     <string name="distance_calc_label_ending_location">Ending Location</string>

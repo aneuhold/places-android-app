@@ -47,7 +47,7 @@ import java.io.OutputStream;
  * @version November 10, 2019
  */
 public class PlaceDB extends SQLiteOpenHelper {
-  private static final boolean DEBUG_ON = true;
+  private static final boolean DEBUG_ON = false;
   private static final int DATABASE_VERSION = 1;
   private static String dbName = "placedb";
   private String dbPath;
@@ -109,7 +109,10 @@ public class PlaceDB extends SQLiteOpenHelper {
    * Does the database exist and has it been initialized? This method determines whether
    * the database needs to be copied to the data/data/pkgName/files directory by
    * checking whether the file exists. If it does it checks to see whether the db is
-   * uninitialized or whether it has the course table.
+   * uninitialized or whether it has the place table.
+   *
+   * The database stored in the raw files is simply an empty place table. It does not have any
+   * values in case the JSON server has values.
    *
    * @return false if the database file needs to be copied from the assets directory, true
    * otherwise.
@@ -138,7 +141,7 @@ public class PlaceDB extends SQLiteOpenHelper {
         }
       }
     }catch(SQLiteException e){
-      android.util.Log.w("CourseDB->checkDB",e.getMessage());
+      android.util.Log.w("PlaceDB->checkDB",e.getMessage());
     }
     if(checkDB != null){
       checkDB.close();
@@ -151,7 +154,7 @@ public class PlaceDB extends SQLiteOpenHelper {
       if(!checkDB()){
 
         // Only copy the database if it doesn't already exist in my database directory
-        debug("CourseDB --> copyDB", "checkDB returned false, starting copy");
+        debug("PlaceDB --> copyDB", "checkDB returned false, starting copy");
         InputStream ip =  context.getResources().openRawResource(R.raw.placedb);
 
         // make sure the database path exists. if not, create it.
@@ -202,6 +205,16 @@ public class PlaceDB extends SQLiteOpenHelper {
       placeDB.delete("place", "name=?", new String[]{name});
     } catch (Exception e) {
       System.out.println("Error in deletePlaceFromDB method");
+      e.printStackTrace();
+    }
+  }
+
+  public static void deleteAllFromDB(Context context) {
+    try (SQLiteDatabase placeDB = new PlaceDB(context).openDB()) {
+      placeDB.execSQL("DELETE FROM place");
+      System.out.println("All places deleted from local DB!");
+    } catch (Exception e) {
+      System.out.println("Error in deleteAllFromDB method");
       e.printStackTrace();
     }
   }

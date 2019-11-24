@@ -2,6 +2,8 @@ package edu.asu.bsse.aneuhold.places;
 
 import android.app.Activity;
 
+import java.util.HashMap;
+
 /**
  * Copyright 2019 Anton G Neuhold Jr,
  *
@@ -44,6 +46,8 @@ public class RPCMethodInformation {
   public MainActivity mainActivity;
   public String urlString;
   public String resultAsJson;
+  public String callbackMethodName;
+  public HashMap<String, Object> extra;
 
   /**
    * callingActivity is an optional setting that can be set after creating a new RPCMethodInformation
@@ -58,5 +62,7 @@ public class RPCMethodInformation {
     this.params = params;
     this.resultAsJson = "{}";
     this.callingActivity = null;
+    this.callbackMethodName = null;
+    this.extra = new HashMap<>();
   }
 }
