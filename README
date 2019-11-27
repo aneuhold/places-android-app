@@ -1,3 +1,5 @@
 Run the application through Android Studio or a device locally
 
 When editing a place, make sure to press "Done" at the bottom of the screen in order for the place data to save. Pressing the back arrow assumes a cancellation of the edits.
+
+Note that only a few places are in the initialized database. There aren't as many as the instructor's place database. 
