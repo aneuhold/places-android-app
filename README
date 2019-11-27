@@ -13,3 +13,5 @@ Syncing:
 - When pressing "Sync Local DB to JSON Server", all of the remote data is cleared and all of the information is pushed from the local data to the server. 
 
 The map can be used by pressing the "Map" option in the menu. 
+
+The "keys.xml" file contains the API key. That can be changed to your own or use the one that I made. 
