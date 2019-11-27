@@ -4,3 +4,5 @@ To run the application:
 
 To change the server location, you can edit the "strings.xml" file where it says 
   "default_url_string".
+
+When editing a place, make sure to press "Done" at the bottom of the screen in order for the place data to save. Pressing the back arrow assumes a cancellation of the edits.
