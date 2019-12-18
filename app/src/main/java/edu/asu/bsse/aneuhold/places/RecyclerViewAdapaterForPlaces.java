@@ -8,6 +8,8 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+
 /**
  * Copyright 2019 Anton G Neuhold Jr,
  *
@@ -30,11 +32,13 @@ import androidx.recyclerview.widget.RecyclerView;
  * @version November 10, 2019
  */
 public class RecyclerViewAdapaterForPlaces extends RecyclerView.Adapter {
-  public String[] placeNames;
+  public ArrayList<String> placeNames;
 
-  // Provide a reference to the views for each data item
-  // Complex data items may need more than one view per item, and
-  // you provide access to all the views for a data item in a view holder
+  /*
+   Provide a reference to the views for each data item
+   Complex data items may need more than one view per item, and
+   you provide access to all the views for a data item in a view holder
+  */
   public static class PlaceViewHolder extends RecyclerView.ViewHolder {
 
     // each data item is just a string in this case
@@ -47,15 +51,7 @@ public class RecyclerViewAdapaterForPlaces extends RecyclerView.Adapter {
     }
   }
 
-  /**
-   * Constructor that can temporarily be used while an AsyncPlacesConnect request is being made
-   * to retrieve the actual data needed for this RecyclerViewAdapterForPlaces object.
-   */
-  public RecyclerViewAdapaterForPlaces() {
-    this.placeNames = new String[]{"Loading places..."};
-  }
-
-  public RecyclerViewAdapaterForPlaces(String[] placeNames) {
+  public RecyclerViewAdapaterForPlaces(ArrayList<String> placeNames) {
     this.placeNames = placeNames;
   }
 
@@ -76,12 +72,12 @@ public class RecyclerViewAdapaterForPlaces extends RecyclerView.Adapter {
     // - get element from your dataset at this position
     // - replace the contents of the view with that element
     PlaceViewHolder placeViewHolder = (PlaceViewHolder) holder;
-    placeViewHolder.textView.setText(placeNames[position]);
+    placeViewHolder.textView.setText(placeNames.get(position));
   }
 
   // Return the size of your dataset (invoked by the layout manager)
   @Override
   public int getItemCount() {
-    return placeNames.length;
+    return placeNames.size();
   }
 }

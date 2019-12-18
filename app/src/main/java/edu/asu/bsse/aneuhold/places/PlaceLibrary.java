@@ -22,7 +22,7 @@ import org.json.JSONTokener;
  * <br>
  *
  * Purpose: Contains a library of PLaceDescription objects. This class is currently not used because
- * data is housed on the JSON RPC server.
+ * data is housed elsewhere.
  *
  * SER 423
  * see http://quay.poly.asu.edu/Mobile/

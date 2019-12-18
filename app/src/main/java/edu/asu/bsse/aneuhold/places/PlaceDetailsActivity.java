@@ -25,13 +25,13 @@ import android.widget.EditText;
  * <br>
  *
  * Purpose: Provides the Activity for a specific place's details screen.
- * This information is populated from a remote JSON RPC server.
+ * This information is populated from a local SQLite3 database.
  *
  * SER 423
  * see http://quay.poly.asu.edu/Mobile/
  * @author Anton Neuhold mailto:aneuhold@asu.edu
  *         Software Engineering
- * @version November 10, 2019
+ * @version November 15, 2019
  */
 public class PlaceDetailsActivity extends AppCompatActivity {
 
@@ -40,12 +40,10 @@ public class PlaceDetailsActivity extends AppCompatActivity {
    * delete option while editing the place description.
    */
   public final static int DELETE_PLACE_DESCRIPTION = 2;
+
   boolean isNewPlaceDescription = false;
   public PlaceDescription placeDescription;
   public String placeName;
-
-  //TODO: This class will need to be changed so that a user cannot create a new place description
-  // then submit it without a unique name.
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -59,19 +57,14 @@ public class PlaceDetailsActivity extends AppCompatActivity {
       isNewPlaceDescription = true;
     }
 
-    /* Request the place description object from AsyncPlacesConnect using the passed in place name.
-     * The hydrateTextFields method will be called once this is complete.
-    */
+    /*
+     * If this is not a new place description, then get the place description
+     * data.
+     */
     if (!isNewPlaceDescription) {
       placeName = intent.getStringExtra(MainActivity.PLACE_NAME);
-      RPCMethodInformation mi = new RPCMethodInformation(null,
-          this.getResources().getString(R.string.default_url_string),
-          "get", new String[]{placeName});
-      mi.callingActivity = this;
-      new AsyncPlacesConnect().execute(mi);
+      placeDescription = PlaceDB.getPlaceDescriptionFromDB(placeName, this);
     }
-
-    this.placeDescription = (PlaceDescription) intent.getSerializableExtra(MainActivity.PLACE_DESCRIPTION);
 
     // Hydrate the fields if the placeDescription is valid
     if (placeDescription != null) {

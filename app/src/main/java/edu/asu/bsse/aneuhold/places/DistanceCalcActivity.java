@@ -1,6 +1,5 @@
 package edu.asu.bsse.aneuhold.places;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -35,7 +34,7 @@ import java.util.Locale;
  * see http://quay.poly.asu.edu/Mobile/
  * @author Anton Neuhold mailto:aneuhold@asu.edu
  *         Software Engineering
- * @version November 10, 2019
+ * @version November 15, 2019
  */
 public class DistanceCalcActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
   private static final double EARTH_AVERAGE_RADIUS_MILES = 3958.8;
@@ -44,8 +43,6 @@ public class DistanceCalcActivity extends AppCompatActivity implements AdapterVi
   public ArrayAdapter<String> endArrayAdapter;
   public PlaceDescription startPlace;
   public PlaceDescription endPlace;
-  public boolean waitingOnStartPlace = false;
-  public boolean waitingOnEndPlace = false;
   private Spinner startSpinner;
   private Spinner endSpinner;
 
@@ -54,13 +51,10 @@ public class DistanceCalcActivity extends AppCompatActivity implements AdapterVi
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_distance_calculator);
 
-    // Retrieve the list of place names.
-    RPCMethodInformation mi = new RPCMethodInformation(null,
-        getResources().getString(R.string.default_url_string),
-        "getNames",
-        new Object[]{});
-    mi.callingActivity = this;
-    new AsyncPlacesConnect().execute(mi);
+    placeNames = PlaceDB.getPlaceNamesFromDB(this);
+    startPlace = PlaceDB.getPlaceDescriptionFromDB(placeNames[0], this);
+    endPlace = PlaceDB.getPlaceDescriptionFromDB(placeNames[0], this);
+    initializeSpinners();
 
     //region Toolbar Setup
     Toolbar toolbar = findViewById(R.id.distanceCalcToolbar);
@@ -70,9 +64,6 @@ public class DistanceCalcActivity extends AppCompatActivity implements AdapterVi
     //endregion
   }
 
-  /**
-   * To be called after placeNames has been set from the AsyncPlacesConnect class
-   */
   public void initializeSpinners() {
 
     // Assign the spinners
@@ -115,27 +106,14 @@ public class DistanceCalcActivity extends AppCompatActivity implements AdapterVi
   @Override
   public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
     if (parent.getId() == R.id.distSpinnerStartingLoc) {
-      waitingOnStartPlace = true;
-      RPCMethodInformation mi = new RPCMethodInformation(null,
-          getResources().getString(R.string.default_url_string),
-          "get",
-          new String[]{startSpinner.getSelectedItem().toString()});
-      mi.callingActivity = this;
-      new AsyncPlacesConnect().execute(mi);
+      startPlace = PlaceDB.getPlaceDescriptionFromDB(placeNames[position], this);
+      calculate();
     } else if (parent.getId() == R.id.distSpinnerEndingLoc) {
-      waitingOnEndPlace = true;
-      RPCMethodInformation mi = new RPCMethodInformation(null,
-          getResources().getString(R.string.default_url_string),
-          "get",
-          new String[]{endSpinner.getSelectedItem().toString()});
-      mi.callingActivity = this;
-      new AsyncPlacesConnect().execute(mi);
+      endPlace = PlaceDB.getPlaceDescriptionFromDB(placeNames[position], this);
+      calculate();
     }
   }
 
-  /**
-   * This method is called from the AsyncPlacesConnect class.
-   */
   public void calculate() {
 
     // Calculate the new distance

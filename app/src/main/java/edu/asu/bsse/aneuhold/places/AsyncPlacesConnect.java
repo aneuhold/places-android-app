@@ -1,3 +1,4 @@
+
 package edu.asu.bsse.aneuhold.places;
 
 import android.os.AsyncTask;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
  * see http://quay.poly.asu.edu/Mobile/
  * @author Anton Neuhold mailto:aneuhold@asu.edu
  *         Software Engineering
- * @version November 10, 2019
+ * @version November 23, 2019
  */
 public class AsyncPlacesConnect extends AsyncTask<RPCMethodInformation, Integer, RPCMethodInformation> {
 
@@ -78,8 +79,7 @@ public class AsyncPlacesConnect extends AsyncTask<RPCMethodInformation, Integer,
           (new URL(rpcMethodInformations[0].urlString)),
           rpcMethodInformations[0].mainActivity
       );
-      String resultStr = conn.call(requestData);
-      rpcMethodInformations[0].resultAsJson = resultStr;
+      rpcMethodInformations[0].resultAsJson = conn.call(requestData);
     } catch (Exception ex){
       android.util.Log.d(this.getClass().getSimpleName(),"exception in remote call "+
           ex.getMessage());
@@ -96,9 +96,7 @@ public class AsyncPlacesConnect extends AsyncTask<RPCMethodInformation, Integer,
   protected void onPostExecute(RPCMethodInformation res) {
 
     // Logging
-    Log.d(this.getClass().getSimpleName(), "in onPostExecute on " +
-        (Looper.myLooper() == Looper.getMainLooper() ? "Main thread" : "Async Thread"));
-    Log.d(this.getClass().getSimpleName(), " resulting is: " + res.resultAsJson);
+    Log.d(this.getClass().getSimpleName(), "Response result is: " + res.resultAsJson);
 
     try {
 
@@ -112,21 +110,18 @@ public class AsyncPlacesConnect extends AsyncTask<RPCMethodInformation, Integer,
           }
           String[] names = al.toArray(new String[0]);
 
-          if (res.mainActivity != null) {
-
-            // Update the mainActivity and the recyclerViewAdapter placeNames
-            res.mainActivity.placeNames = names;
-            res.mainActivity.recyclerViewAdapter.placeNames = names;
-            res.mainActivity.recyclerViewAdapter.notifyDataSetChanged();
+          switch (res.callbackMethodName) {
+            case "syncDBWithJsonServerCallback":
+              res.mainActivity.syncDBWithJsonServerCallback(names);
+              break;
+            case "syncLocalDBToJsonServerCallback":
+              res.mainActivity.syncLocalDBToJsonServerCallback(names);
+              break;
+            case "syncJSonServerToLocalDBCallback":
+              res.mainActivity.syncJSonServerToLocalDBCallback(names);
+              break;
           }
 
-          if (res.callingActivity != null &&
-              res.callingActivity.getClass().getSimpleName().equals("DistanceCalcActivity")) {
-            System.out.println("The calling activity was DistanceCalcActivity");
-            DistanceCalcActivity distanceCalcActivity = (DistanceCalcActivity) res.callingActivity;
-            distanceCalcActivity.placeNames = names;
-            distanceCalcActivity.initializeSpinners();
-          }
           break;
         }
         case "get": {
@@ -134,51 +129,25 @@ public class AsyncPlacesConnect extends AsyncTask<RPCMethodInformation, Integer,
           JSONObject jo = new JSONObject(res.resultAsJson);
           PlaceDescription place = new PlaceDescription(jo.getJSONObject("result"));
 
-          if (res.callingActivity != null &&
-              res.callingActivity.getClass().getSimpleName().equals("PlaceDetailsActivity")) {
-            PlaceDetailsActivity placeDetailsActivity = (PlaceDetailsActivity) res.callingActivity;
-            placeDetailsActivity.placeDescription = place;
-            placeDetailsActivity.hydrateTextFields();
-          } else if (res.callingActivity != null &&
-              res.callingActivity.getClass().getSimpleName().equals("DistanceCalcActivity")) {
-            DistanceCalcActivity distanceCalcActivity = (DistanceCalcActivity) res.callingActivity;
-            if (distanceCalcActivity.waitingOnStartPlace) {
-              distanceCalcActivity.startPlace = place;
-              distanceCalcActivity.waitingOnStartPlace = false;
-              distanceCalcActivity.calculate();
-            } else if (distanceCalcActivity.waitingOnEndPlace) {
-              distanceCalcActivity.endPlace = place;
-              distanceCalcActivity.waitingOnEndPlace = false;
-              distanceCalcActivity.calculate();
-            }
+          if (res.callbackMethodName.equals("PlaceDB.addPlaceInDB")) {
+            PlaceDB.addPlaceInDB(place, res.mainActivity);
+            res.mainActivity.placeNames.add(place.getPlaceName());
+            res.mainActivity.recyclerViewAdapter.notifyDataSetChanged();
           }
 
           break;
         }
         case "add":
-          System.out.println("Entered the addition method of the AsyncPlacesConnect class");
-
-          // Finished adding a place. Refresh the list of places by going back to the server for names
-          try {
-            RPCMethodInformation mi = new RPCMethodInformation(res.mainActivity, res.urlString,
-                "getNames", new Object[]{});
-            new AsyncPlacesConnect().execute(mi);
-          } catch (Exception ex) {
-            Log.w(this.getClass().getSimpleName(), "Exception processing getNames: " +
-                ex.getMessage());
-          }
-
+          // Empty for now
           break;
         case "remove":
-          if (res.mainActivity.waitingForDelete) {
-
-            System.out.println("The add place after remove method is about to be called");
-            res.mainActivity.addPlaceAfterDeletion();
-          } else {
-
-            // Refresh the list of places
-            RPCMethodInformation mi = new RPCMethodInformation(res.mainActivity, res.urlString,
-                "getNames", new Object[]{});
+          if (res.callbackMethodName != null && res.callbackMethodName.equals("add")) {
+            PlaceDescription placeDescription =
+                PlaceDB.getPlaceDescriptionFromDB((String) res.extra.get("addBack"), res.mainActivity);
+            RPCMethodInformation mi = new RPCMethodInformation(res.mainActivity,
+                res.mainActivity.getResources().getString(R.string.default_url_string),
+                "add",
+                new Object[]{placeDescription.toJsonObj()});
             new AsyncPlacesConnect().execute(mi);
           }
           break;

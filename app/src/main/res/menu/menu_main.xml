@@ -4,11 +4,21 @@
     android:background="@color/colorPrimary">
 
   <item
+      android:id="@+id/menu_action_map"
+      android:title="@string/menu_map" />
+  <item
       android:id="@+id/menu_action_calculate_distance"
       android:title="@string/menu_calculate_distance" />
+  <item
+      android:id="@+id/menu_action_sync_json_server_to_local_db"
+      android:title="@string/menu_sync_server_to_local_db" />
+  <item
+      android:id="@+id/menu_action_sync_local_db_to_json_server"
+      android:title="@string/menu_sync_local_db_to_server" />
   <item
       android:id="@+id/menu_action_add"
       android:icon="@drawable/ic_add_24px"
       android:title="@string/menu_add_place"
       app:showAsAction="ifRoom" />
+
 </menu>
