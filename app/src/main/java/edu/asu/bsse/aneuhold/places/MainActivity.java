@@ -212,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Trigger the method call to get the placeNames from the JSON server.
     RPCMethodInformation mi = new RPCMethodInformation(this,
-        getResources().getString(R.string.default_url_string),
+        getResources().getString(R.string.server_url_string),
         "getNames",
         new Object[]{});
     mi.callbackMethodName = "syncDBWithJsonServerCallback";
@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Trigger the method call to get the placeNames from the JSON server.
     RPCMethodInformation mi = new RPCMethodInformation(this,
-        getResources().getString(R.string.default_url_string),
+        getResources().getString(R.string.server_url_string),
         "getNames",
         new Object[]{});
     mi.callbackMethodName = "syncLocalDBToJsonServerCallback";
@@ -240,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Trigger the method call to get the placeNames from the JSON server.
     RPCMethodInformation mi = new RPCMethodInformation(this,
-        getResources().getString(R.string.default_url_string),
+        getResources().getString(R.string.server_url_string),
         "getNames",
         new Object[]{});
     mi.callbackMethodName = "syncJSonServerToLocalDBCallback";
@@ -251,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
   public void syncJSonServerToLocalDBCallback(String[] jsonServerPlaceNames) {
     for (String jsonServerPlaceName: jsonServerPlaceNames) {
       RPCMethodInformation mi = new RPCMethodInformation(this,
-          getResources().getString(R.string.default_url_string),
+          getResources().getString(R.string.server_url_string),
           "get",
           new String[]{jsonServerPlaceName});
       mi.callbackMethodName = "PlaceDB.addPlaceInDB";
@@ -266,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Delete the place on the JSON server, then add it back with the local properties
         RPCMethodInformation mi = new RPCMethodInformation(this,
-            getResources().getString(R.string.default_url_string),
+            getResources().getString(R.string.server_url_string),
             "remove",
             new String[]{placeName});
         mi.callbackMethodName = "add";
@@ -281,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
         // For those place names that aren't in the server places, simply add them in
         PlaceDescription placeDescription = PlaceDB.getPlaceDescriptionFromDB(placeName, this);
         RPCMethodInformation mi = new RPCMethodInformation(this,
-            getResources().getString(R.string.default_url_string),
+            getResources().getString(R.string.server_url_string),
             "add",
             new Object[]{placeDescription.toJsonObj()});
         new AsyncPlacesConnect().execute(mi);
@@ -293,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
 
       // Delete the place on the JSON server, then add it back with the local properties
       RPCMethodInformation mi = new RPCMethodInformation(this,
-          getResources().getString(R.string.default_url_string),
+          getResources().getString(R.string.server_url_string),
           "remove",
           new String[]{placeName});
       new AsyncPlacesConnect().execute(mi);
@@ -319,7 +319,7 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("tempPlaceNames does not contain " + jsonServerPlaceName +
             "So it is being added from the JSON server");
         RPCMethodInformation mi = new RPCMethodInformation(this,
-            getResources().getString(R.string.default_url_string),
+            getResources().getString(R.string.server_url_string),
             "get",
             new String[]{jsonServerPlaceName});
         mi.callbackMethodName = "PlaceDB.addPlaceInDB";
@@ -331,7 +331,7 @@ public class MainActivity extends AppCompatActivity {
     for (String placeName: tempPlaceNames) {
       PlaceDescription placeDescription = PlaceDB.getPlaceDescriptionFromDB(placeName, this);
       RPCMethodInformation mi = new RPCMethodInformation(this,
-          getResources().getString(R.string.default_url_string),
+          getResources().getString(R.string.server_url_string),
           "add",
           new Object[]{placeDescription.toJsonObj()});
       new AsyncPlacesConnect().execute(mi);

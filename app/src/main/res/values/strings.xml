@@ -26,5 +26,5 @@
     <string name="distance_calc_label_result_distance">Distance:</string>
     <string name="distance_calc_label_result_initial_bearing">Initial Bearing:</string>
     <string name="map_dialog_text">Enter New Place Name</string>
-    <string name="default_url_string">http://10.0.2.2:8080/</string>
+    <string name="server_url_string">http://10.0.2.2:8080/</string>
 </resources>

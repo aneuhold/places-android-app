@@ -145,7 +145,7 @@ public class AsyncPlacesConnect extends AsyncTask<RPCMethodInformation, Integer,
             PlaceDescription placeDescription =
                 PlaceDB.getPlaceDescriptionFromDB((String) res.extra.get("addBack"), res.mainActivity);
             RPCMethodInformation mi = new RPCMethodInformation(res.mainActivity,
-                res.mainActivity.getResources().getString(R.string.default_url_string),
+                res.mainActivity.getResources().getString(R.string.server_url_string),
                 "add",
                 new Object[]{placeDescription.toJsonObj()});
             new AsyncPlacesConnect().execute(mi);
