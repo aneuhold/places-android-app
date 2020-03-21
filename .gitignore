@@ -13,4 +13,7 @@
 .externalNativeBuild
 .cxx
 
+# Android Studio
+*.idea
+
 keys.xml
