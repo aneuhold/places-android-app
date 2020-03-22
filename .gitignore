@@ -77,3 +77,6 @@ lint/tmp/
 
 # Mac
 *.DS_Store
+
+# Keys file
+keys.xml
